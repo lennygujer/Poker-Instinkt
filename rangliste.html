@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Starthände Rangliste · Poker Instinkt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Manrope:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Gleiche Optik wie der Trainer: dunkler Filz, Messing-Akzent. Eine sortierte Tabelle als Hauptinhalt. */
+:root{
+  --felt:#0f3a2f; --ground:#0b1512; --rail:#241a13;
+  --ink:#ecf2ee; --ink-dim:#9db3a9; --card:#f8f4ea; --card-ink:#1b1f1d; --card-red:#c8322f;
+  --brass:#d9a441; --good:#33c97a; --line:rgba(236,242,238,.14); --row:rgba(255,255,255,.03);
+  --f-display:"Fraunces", Georgia, "Times New Roman", serif;
+  --f-ui:"Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-num:"JetBrains Mono", ui-monospace, Consolas, monospace;
+  color-scheme:dark;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.5}
+.wrap{max-width:820px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:18px 40px;display:flex;flex-direction:column;gap:16px}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{color:var(--ink-dim);text-decoration:none;font-weight:700;font-size:.85rem;border:1px solid var(--line);border-radius:8px;padding:5px 12px}
+nav a[aria-current="page"]{background:var(--brass);color:#1d1408;border-color:var(--brass)}
+nav a:hover{color:var(--ink)}
+h1{font-family:var(--f-display);font-weight:800;font-size:1.7rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1 span{color:var(--brass)}
+.lead{margin:0;color:var(--ink-dim);max-width:65ch}
+.controls{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;font-size:.85rem;color:var(--ink-dim)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-left:6px}
+.seg button{background:none;border:0;color:var(--ink-dim);font:700 .85rem var(--f-ui);padding:5px 11px;cursor:pointer}
+.seg.num button{font-family:var(--f-num)}
+.seg button[aria-pressed="true"]{background:var(--brass);color:#1d1408}
+button:focus-visible,a:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.sum{background:var(--felt);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.sum .k{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);font-weight:800}
+.sum .v{font:700 1.05rem var(--f-num);font-variant-numeric:tabular-nums}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th{position:sticky;top:0;background:var(--rail);text-align:left;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);padding:8px 10px;font-weight:800}
+td{padding:6px 10px;border-top:1px solid var(--line);vertical-align:middle}
+tr:nth-child(even) td{background:var(--row)}
+td.rank{font:500 .82rem var(--f-num);color:var(--ink-dim);width:3.5em}
+td.hand{white-space:nowrap}
+.cards{display:inline-flex;gap:3px;vertical-align:middle;margin-right:8px}
+.c{width:26px;height:36px;border-radius:4px;background:var(--card);color:var(--card-ink);display:inline-flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.c.red{color:var(--card-red)}
+.c b{font:800 .85rem var(--f-display)}
+.c i{font-style:normal;font-size:.72rem}
+.code{font:700 .9rem var(--f-num)}
+td.type{color:var(--ink-dim);font-size:.82rem}
+td.eq{min-width:170px}
+.bar{display:flex;align-items:center;gap:8px}
+.bar .track{flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,.07);position:relative;overflow:hidden;min-width:60px}
+.bar .fill{position:absolute;inset:0 auto 0 0;background:var(--brass);border-radius:4px}
+.bar .fill.below{background:var(--ink-dim);opacity:.5}
+.bar .val{font:700 .85rem var(--f-num);width:3.6em;text-align:right}
+td.top{font:500 .82rem var(--f-num);color:var(--ink-dim);text-align:right;white-space:nowrap}
+tr.cut td{border-top:2px dashed var(--good)}
+.cutnote{font-size:.8rem;color:var(--good)}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;border-top:1px solid var(--line);padding-top:14px}
+.legend div{min-width:0}
+.legend h3{margin:0 0 4px;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brass)}
+.legend p{margin:0;font-size:.86rem;color:var(--ink-dim)}
+@media (max-width:520px){td.type,th.type{display:none}.c{width:22px;height:31px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav aria-label="Seiten">
+    <a href="./">Trainer</a>
+    <a href="rangliste.html" aria-current="page">Rangliste der Starthände</a>
+  </nav>
+  <h1>Starthände <span>Rangliste</span></h1>
+  <p class="lead">Alle 169 Starthände im Texas Hold'em, sortiert nach ihrer Gewinnchance bis zum River. Jeder Wert stammt aus 60 000 simulierten Händen gegen zufällige Karten der Gegner.</p>
+
+  <div class="controls">
+    <span>Gegner<span class="seg num" id="oppSeg" role="group" aria-label="Anzahl Gegner"></span></span>
+    <span>Zeigen<span class="seg" id="typeSeg" role="group" aria-label="Handtyp filtern"></span></span>
+  </div>
+
+  <div class="summary" id="summary"></div>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Rang</th><th>Hand</th><th class="type">Typ</th><th>Gewinnchance</th><th style="text-align:right">Top</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <section class="legend">
+    <div><h3>Suited und offsuit</h3><p>„s“ heisst gleiche Farbe, „o“ verschiedene Farben. Gleiche Farbe bringt rund 2 bis 4 Prozentpunkte mehr, weil ein Flush möglich wird.</p></div>
+    <div><h3>Fairer Anteil</h3><p>Bei 3 Spielern gewinnt jede Hand im Schnitt 33 %. Hände oberhalb der grünen Linie liegen darüber, die gold gefärbten Balken zeigen das.</p></div>
+    <div><h3>Top-Prozent</h3><p>Wie viel Prozent aller möglichen Kartenpaare gleich gut oder besser sind. „Top 10 %“ heisst: nur jede zehnte Starthand ist so stark.</p></div>
+    <div><h3>Mehr Gegner</h3><p>Gegen viele Gegner gewinnen Paare und suited Hände an Wert, hohe offsuit Karten wie K-To verlieren. Wechsle die Gegnerzahl und vergleiche.</p></div>
+  </section>
+</div>
+
+<script>
+// Gewinnchance in Promille je Gegnerzahl, Reihenfolge wie HANDS unten (AA, AKs, AKo, AQs, ...)
+const DATA = {"1":[851,670,652,659,642,655,635,647,630,625,609,619,600,609,591,597,575,600,579,590,564,584,557,571,553,822,637,613,629,606,618,594,601,576,584,560,575,551,567,541,558,535,549,526,541,517,533,504,801,602,582,594,574,575,554,563,537,546,521,537,507,528,501,518,491,511,484,502,473,774,575,552,556,533,540,517,526,497,504,480,499,476,489,463,485,456,478,446,748,543,514,524,496,506,477,486,460,472,444,462,437,457,426,446,415,721,513,486,492,462,473,445,452,427,442,409,430,401,422,392,694,479,450,462,432,447,412,428,391,407,377,403,369,662,454,420,439,405,418,385,401,365,384,346,632,430,399,413,381,397,363,375,340,602,416,386,397,362,377,345,572,390,352,368,331,533,361,323,504],"2":[732,507,483,496,463,479,454,470,441,443,414,435,405,423,393,411,380,412,383,403,371,399,360,391,353,689,472,446,458,433,448,419,424,392,398,366,395,362,381,350,374,338,366,331,357,322,349,314,646,440,414,435,402,407,377,382,352,370,331,358,325,351,311,342,306,334,296,325,284,610,421,393,395,362,373,345,354,321,333,299,326,292,318,281,312,274,306,267,572,387,352,368,335,345,311,326,296,308,270,302,267,293,259,287,245,535,359,327,342,308,321,284,303,263,283,242,277,240,270,231,499,342,302,317,286,300,265,279,245,262,224,259,216,463,318,287,299,264,286,244,263,225,244,206,433,303,266,285,246,265,228,251,206,400,286,252,274,237,258,216,370,266,225,247,210,334,239,197,309],"3":[635,413,388,399,367,385,352,373,339,344,312,336,298,324,288,317,276,315,279,309,274,304,266,294,251,581,381,355,370,337,358,324,331,298,308,274,302,262,294,254,284,244,273,235,270,226,260,219,534,356,329,344,315,316,283,295,264,279,239,271,232,266,224,255,216,245,205,243,202,492,339,309,313,278,295,253,270,234,253,213,245,205,239,199,236,193,229,184,450,308,275,290,252,269,231,251,212,233,194,226,187,222,182,212,174,412,284,249,268,231,247,213,230,193,214,171,208,167,201,160,377,265,230,250,213,231,192,217,172,201,155,195,147,345,250,215,234,196,219,179,198,160,186,141,315,235,200,221,181,206,166,188,146,288,228,188,210,172,194,155,262,203,165,189,149,240,182,139,220],"4":[558,354,324,337,305,324,288,309,278,280,245,273,236,262,223,255,214,260,220,253,212,248,206,240,200,496,318,293,309,278,300,264,270,232,253,213,244,205,234,194,231,188,222,183,220,176,213,172,447,306,267,294,257,266,223,244,206,225,189,219,177,211,173,204,166,199,160,197,154,404,282,253,260,226,240,204,219,185,205,165,200,157,192,153,190,145,182,143,364,257,224,240,205,221,185,204,164,189,149,185,144,178,138,176,132,326,239,203,222,183,199,167,187,147,172,130,168,128,165,122,293,222,183,207,167,189,153,176,135,163,117,156,115,270,208,173,193,156,180,138,164,122,150,107,244,202,158,183,145,169,126,153,113,222,189,150,177,137,161,122,207,168,129,157,114,192,151,108,177],"5":[490,310,277,292,258,277,245,267,228,240,202,231,193,221,181,214,174,223,182,221,172,212,169,201,165,429,283,252,268,237,258,226,232,194,216,172,208,165,199,158,195,153,190,149,189,141,181,138,379,263,229,250,216,226,187,205,171,189,149,185,144,181,138,178,134,172,129,166,123,335,249,215,228,186,205,166,189,147,174,134,171,126,165,124,160,120,156,114,302,225,189,206,169,194,150,173,134,161,119,156,114,153,112,148,108,268,202,166,191,148,171,135,161,120,146,106,143,102,139,95,242,190,153,176,138,163,123,148,110,135,93,135,91,217,178,143,166,127,152,114,141,99,128,85,201,169,133,162,121,144,106,133,89,186,164,127,155,112,143,99,172,146,106,137,97,161,134,89,156]};
+(() => {
+  const RN = ['2','3','4','5','6','7','8','9','T','J','Q','K','A'];
+  const RD = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+  const HANDS = [];
+  for (let a = 12; a >= 0; a--) for (let b = a; b >= 0; b--) {
+    if (a === b) HANDS.push([a, b, 'p']); else { HANDS.push([a, b, 's']); HANDS.push([a, b, 'o']); }
+  }
+  const COMBOS = { p: 6, s: 4, o: 12 };
+  const TYPE = { p: 'Paar', s: 'suited', o: 'offsuit' };
+  let nOpp = 1, filter = 'all';
+  try { const v = +localStorage.getItem('pokerInstinktOpp'); if (v >= 1 && v <= 5) nOpp = v; } catch (e) {}
+  const $ = id => document.getElementById(id);
+  const pct = x => (x / 10).toFixed(1).replace('.', ',') + ' %';
+
+  function seg(el, items, get, set) {
+    el.innerHTML = '';
+    items.forEach(([val, label]) => {
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = label;
+      b.setAttribute('aria-pressed', get() === val);
+      b.onclick = () => { set(val); seg(el, items, get, set); render(); };
+      el.appendChild(b);
+    });
+  }
+  function card(r, red, suit) { return `<span class="c${red ? ' red' : ''}"><b>${RD[r]}</b><i>${suit}</i></span>`; }
+  function handCell([a, b, k]) {
+    const code = RN[a] + RN[b] + (k === 'p' ? '' : k);
+    const c2 = k === 's' ? card(b, false, '♠') : card(b, true, '♥');
+    return `<span class="cards">${card(a, false, '♠')}${c2}</span><span class="code">${code}</span>`;
+  }
+
+  function render() {
+    const eq = DATA[nOpp];
+    const fair = 1000 / (nOpp + 1);
+    const all = HANDS.map((h, i) => ({ h, e: eq[i] })).sort((x, y) => y.e - x.e);
+    let cum = 0; all.forEach((r, i) => { r.rank = i + 1; cum += COMBOS[r.h[2]]; r.top = cum / 1326 * 100; });
+    const max = all[0].e;
+    const above = all.filter(r => r.e >= fair);
+    const aboveCombos = above.reduce((s, r) => s + COMBOS[r.h[2]], 0);
+    $('summary').innerHTML = [
+      ['Beste Hand', handText(all[0].h) + ' · ' + pct(all[0].e)],
+      ['Schlechteste Hand', handText(all[all.length - 1].h) + ' · ' + pct(all[all.length - 1].e)],
+      ['Fairer Anteil', pct(fair) + ' bei ' + (nOpp + 1) + ' Spielern'],
+      ['Darüber', above.length + ' Hände · ' + Math.round(aboveCombos / 1326 * 100) + ' % aller Karten']
+    ].map(([k, v]) => `<div class="sum"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
+    let cutDone = false;
+    $('rows').innerHTML = all.filter(r => filter === 'all' || r.h[2] === filter).map(r => {
+      const below = r.e < fair;
+      let cls = '';
+      if (below && !cutDone) { cutDone = true; cls = ' class="cut" title="Ab hier unter dem fairen Anteil"'; }
+      return `<tr${cls}><td class="rank">${r.rank}</td><td class="hand">${handCell(r.h)}</td><td class="type">${TYPE[r.h[2]]}</td>`
+        + `<td class="eq"><div class="bar"><div class="track"><div class="fill${below ? ' below' : ''}" style="width:${(r.e / max * 100).toFixed(1)}%"></div></div><span class="val">${pct(r.e)}</span></div></td>`
+        + `<td class="top">${r.top < 1 ? r.top.toFixed(1).replace('.', ',') : Math.round(r.top)} %</td></tr>`;
+    }).join('');
+  }
+  function handText([a, b, k]) { return RD[a] + '-' + RD[b] + (k === 'p' ? '' : k === 's' ? ' suited' : ' offsuit'); }
+
+  seg($('oppSeg'), [1,2,3,4,5].map(n => [n, String(n)]), () => nOpp, v => { nOpp = v; try { localStorage.setItem('pokerInstinktOpp', v); } catch (e) {} });
+  seg($('typeSeg'), [['all','Alle'],['p','Paare'],['s','Suited'],['o','Offsuit']], () => filter, v => { filter = v; });
+  render();
+})();
+</script>
+</body>
+</html>

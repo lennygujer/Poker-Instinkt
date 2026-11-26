@@ -24,6 +24,10 @@
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.5}
 .wrap{max-width:820px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:18px 40px;display:flex;flex-direction:column;gap:16px}
+.pages{display:flex;flex-wrap:wrap;gap:8px}
+.pages a{color:var(--ink-dim);text-decoration:none;font-weight:700;font-size:.85rem;border:1px solid var(--line);border-radius:8px;padding:5px 12px}
+.pages a[aria-current="page"]{background:var(--brass);color:#1d1408;border-color:var(--brass)}
+.pages a:hover{color:var(--ink)}
 header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
 h1{font-family:var(--f-display);font-weight:800;font-size:1.6rem;margin:0;letter-spacing:-.01em}
 h1 span{color:var(--brass)}
@@ -117,6 +121,10 @@ kbd{font:600 .72rem var(--f-num);border:1px solid var(--line);border-radius:4px;
 </head>
 <body>
 <div class="wrap">
+  <nav class="pages" aria-label="Seiten">
+    <a href="./" aria-current="page">Trainer</a>
+    <a href="rangliste.html">Rangliste der Starthände</a>
+  </nav>
   <header>
     <h1>Poker <span>Instinkt</span></h1>
     <div class="stats" aria-live="polite">
