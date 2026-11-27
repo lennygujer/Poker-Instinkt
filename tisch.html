@@ -487,7 +487,7 @@ nav a[aria-current="page"]{background:var(--brass);color:var(--brass-ink);border
   $('nextHand').onclick = () => { undo = []; startHand(); };
 
   // Rückgängig und Neues Spiel
-  $('undoBtn').onclick = () => { if (!undo.length) return; G = JSON.parse(undo.pop()); save(); render(); };
+  $('undoBtn').onclick = () => { if (!undo.length) return; G = JSON.parse(undo.pop()); if (G.H) G.H.sel = []; save(); render(); };
   let newArmed = null;
   $('newBtn').onclick = () => {
     const b = $('newBtn');
