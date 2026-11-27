@@ -8,19 +8,21 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Manrope:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
 /* Layout: ein Pokertisch als Mittelpunkt, darunter Bewertung + drei Aktionsknöpfe. Bewusst eine Optik (dunkler Filz), unabhängig vom Theme. */
+@font-face{font-family:"Grand Casino";src:url("fonts/grand-casino.otf") format("opentype");font-display:swap}
 :root{
   --felt:#0f3a2f; --felt-hi:#16503f; --rail:#241a13; --ground:#0b1512;
   --ink:#ecf2ee; --ink-dim:#9db3a9; --card:#f8f4ea; --card-ink:#1b1f1d; --card-red:#c8322f;
   --brass:#d9a441; --good:#33c97a; --good-bg:#0f3d27; --bad:#ef5350; --bad-bg:#4a1717;
   --line:rgba(236,242,238,.14);
-  --f-display:"Fraunces", Georgia, "Times New Roman", serif;
-  --f-ui:"Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --f-num:"JetBrains Mono", ui-monospace, Consolas, monospace;
+  --f-display:"Grand Casino", "Manrope", Georgia, serif;
+  --f-ui:"Grand Casino", "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-num:"Grand Casino", "JetBrains Mono", ui-monospace, Consolas, monospace;
   --cw:clamp(46px, 13vw, 74px);
   color-scheme:dark;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
+input,button,select,textarea,kbd{font-family:var(--f-ui)}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.5}
 .wrap{max-width:820px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:18px 40px;display:flex;flex-direction:column;gap:16px}
@@ -124,6 +126,7 @@ kbd{font:600 .72rem var(--f-num);border:1px solid var(--line);border-radius:4px;
   <nav class="pages" aria-label="Seiten">
     <a href="./" aria-current="page">Trainer</a>
     <a href="rangliste.html">Rangliste der Starthände</a>
+    <a href="tisch.html">Spieltisch</a>
   </nav>
   <header>
     <h1>Poker <span>Instinkt</span></h1>
