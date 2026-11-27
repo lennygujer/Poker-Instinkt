@@ -387,7 +387,9 @@ nav a[aria-current="page"]{background:var(--brass);color:var(--brass-ink);border
     $('handNo').textContent = 'Hand ' + G.hand;
     $('blinds').textContent = G.sb + ' / ' + G.bb;
     $('pot').textContent = fmt(potTotal());
-    const pots = G.phase === 'bet' ? computePots() : (H.pots || []);
+    // Nebenpots nur zeigen, wenn jemand all-in ist
+    const anyAllin = H.ps.some(s => s.allin && !s.out && !s.folded);
+    const pots = G.phase === 'bet' ? (anyAllin ? computePots() : []) : (H.pots || []);
     $('side').innerHTML = pots.length > 1 ? pots.map((p, k) => `<span>${k ? 'Nebenpot ' + k : 'Hauptpot'} ${fmt(p.amt)}</span>`).join('') : '';
     $('undoBtn').disabled = !undo.length;
     renderPlayers();
